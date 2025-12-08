@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="180dp"
+    android:viewportWidth="400"
+    android:viewportHeight="180">
+
+    <!-- Main wave background -->
+    <path
+        android:fillColor="#D4F5F2"
+        android:pathData="M0,0 L400,0 L400,120 Q320,160 240,130 Q160,100 80,140 Q40,160 0,140 Z" />
+
+    <!-- Secondary lighter wave -->
+    <path
+        android:fillColor="#E8FAF8"
+        android:pathData="M0,0 L400,0 L400,80 Q300,120 200,90 Q100,60 0,100 Z" />
+
+</vector>
