@@ -1,41 +1,48 @@
 package vetro.uz.authentication.screens.login;
 
-import vetro.uz.authentication.data.PrefsManager;
-
 public class LoginPresenter implements LoginContract.Presenter {
-    private final LoginContract.View view;
-    private final LoginContract.Model model;
+    private LoginContract.View view;
+    private LoginContract.Model model;
+    private String password = "";
+    private String login = "";
 
-    public LoginPresenter(LoginContract.View view, LoginContract.Model model){
+    public LoginPresenter(LoginContract.View view) {
         this.view = view;
-        this.model = model;
+        this.model = new LoginModel();
     }
 
-
     @Override
-    public void onLoginClicked(String login, String password) {
-        if (login.isEmpty()){
-            view.showLoginError("Login yozilmagan");
-            return;
-        }
-        if (password.isEmpty()){
-            view.showPasswordError("Password yozilmagan");
-            return;
-        }
-        if (!model.isUserRegistered()){
-            view.showMessage("Account topilmadi, Iltimos qayta Registiratsiya qiling");
-            return;
-        }
-        if (model.validateCredentials(login, password)){
-            model.setLoggedIn(true);
-            view.navigateToMain();
-        }else {
-            view.showMessage("Xatolik!");
+    public void checkActiveUser() {
+        int activeIndex = model.getCurrentActiveUserIndex();
+        if (activeIndex != -1) {
+            view.navigateToMain(activeIndex);
         }
     }
 
     @Override
-    public void onCreateAccountClicked() {
+    public void setPassword(String st) {
+        this.password = st;
+        view.setLoginButtonState(this.password.trim().length() >= 5 && this.login.trim().length() >= 5);
+    }
+
+    @Override
+    public void setLogin(String st) {
+        this.login = st;
+        view.setLoginButtonState(this.password.trim().length() >= 5 && this.login.trim().length() >= 5);
+    }
+
+    @Override
+    public void login() {
+        int i = model.checkUser(login.trim(), password.trim());
+        if (i == -1) view.showMessage("Bu login parol bo'yicha user topilmadi");
+        else {
+            view.navigateToMain(i);
+
+        }
+    }
+
+    @Override
+    public void register() {
         view.navigateToRegister();
     }
 }

@@ -3,20 +3,23 @@ package vetro.uz.authentication.screens.login;
 public interface LoginContract {
     
     interface View {
-        void showLoginError(String message);
-        void showPasswordError(String message);
+        void setLoginButtonState(boolean bool);
+
         void showMessage(String message);
+
         void navigateToRegister();
-        void navigateToMain();
+        void navigateToMain(int index);
     }
     
     interface Presenter {
-        void onLoginClicked(String login, String password);
-        void onCreateAccountClicked();
+        void checkActiveUser();
+        void setPassword(String st);
+        void setLogin(String st);
+        void login();
+        void register();
     }
     interface Model{
-        boolean validateCredentials(String login, String password);
-        boolean isUserRegistered();
-        void setLoggedIn(boolean isLoggedIn);
+        int checkUser(String login, String password);
+        int getCurrentActiveUserIndex();
     }
 }

@@ -2,22 +2,23 @@ package vetro.uz.authentication.screens.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import vetro.uz.authentication.R;
-import vetro.uz.authentication.data.PrefsManager;
 import vetro.uz.authentication.screens.profile.MainActivity;
 import vetro.uz.authentication.screens.register.RegisterActivity;
 
 public class LoginActivity extends AppCompatActivity implements LoginContract.View {
     
     private EditText etLogin;
-    private EditText    etPassword;
+    private EditText etPassword;
     private Button btnLogin;
     private TextView tvCreateAccount;
 
@@ -28,15 +29,45 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         viewFind();
-        PrefsManager prefs = new PrefsManager(this);
-        presenter = new LoginPresenter(this, new LoginModel(prefs));
+        presenter = new LoginPresenter(this);
+        presenter.checkActiveUser();
         btnLogin.setOnClickListener(view -> {
-            String login = etLogin.getText().toString().trim();
-            String password = etPassword.getText().toString().trim();
-            presenter.onLoginClicked(login, password);
+          presenter.login();
         });
         tvCreateAccount.setOnClickListener(view -> {
-            presenter.onCreateAccountClicked();
+            presenter.register();
+        });
+        etLogin.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.setLogin(editable.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+        });
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.setPassword(editable.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
         });
 
     }
@@ -49,20 +80,18 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
 
     }
 
-
     @Override
-    public void showLoginError(String message) {
-        etLogin.setError(message);
-    }
-
-    @Override
-    public void showPasswordError(String message) {
-        etPassword.setError(message);
+    public void setLoginButtonState(boolean bool) {
+        btnLogin.setEnabled(bool);
     }
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage(message)
+                .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     @Override
@@ -71,8 +100,12 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     }
 
     @Override
-    public void navigateToMain() {
-        startActivity(new Intent(this, MainActivity.class));
+    public void navigateToMain(int index) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("INDEX",index);
+        startActivity(intent);
         finish();
     }
+
+
 }

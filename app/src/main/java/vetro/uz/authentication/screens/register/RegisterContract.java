@@ -5,18 +5,23 @@ public interface RegisterContract {
     interface View {
       void showLoginError(String message);
       void showPassword(String message);
-      void showConfrimPasswordError(String message);
+      void showConfirmPasswordError(String message);
       void showMessage(String message);
-      void navigateToMain();
+      void alreadyExistLogin();
+      void showInvalidCharacterError();
+      void navigateToMain(int index);
       void navigateToLogin();
+      void submitButtonState(boolean bool);
     }
 
     interface Presenter {
-        void onSubmitClicked(String login, String password, String confirmPassword);
+        void setLogin(String s);
+        void setPassword(String s);
+        void setRepeatPassword(String s);
+        void backLogin();
+        void clickSubmit();
     }
     interface Model{
-        boolean isUserRegistered();
-        void saveUser(String login, String password);
-        void setLoggedIn(boolean loggedIn);
+        int register(String login, String password);
     }
 }

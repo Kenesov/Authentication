@@ -1,27 +1,16 @@
 package vetro.uz.authentication.screens.register;
 
-import vetro.uz.authentication.data.PrefsManager;
-import vetro.uz.authentication.models.UserData;
+import vetro.uz.authentication.domain.AppRepository;
+import vetro.uz.authentication.domain.AppRepositoryImpl;
 
 public class RegisterModel implements RegisterContract.Model{
-    private final PrefsManager prefs;
+    private AppRepository repository = AppRepositoryImpl.getInstance();
 
-    public RegisterModel(PrefsManager prefs){
-        this.prefs = prefs;
-    }
-    @Override
-    public boolean isUserRegistered() {
-        return prefs.isUserRegistered();
-    }
+
 
     @Override
-    public void saveUser(String login, String password) {
-        UserData userData = new UserData.UserDataBuilder().setLogin(login).setPassword(password).build();
-        prefs.saveUser(userData);
-    }
+    public int register(String login, String password) {
 
-    @Override
-    public void setLoggedIn(boolean loggedIn) {
-        prefs.setLoggedIn(loggedIn);
+        return repository.register(login,password);
     }
 }

@@ -1,71 +1,62 @@
 package vetro.uz.authentication.screens.profile;
 
-import vetro.uz.authentication.data.PrefsManager;
-import vetro.uz.authentication.models.UserData;
+import vetro.uz.authentication.data.UserData;
 
 public class MainPresenter implements MainContract.Presenter{
     private final MainContract.Model model;
     private final MainContract.View view;
+    private int index ;
 
-    public MainPresenter(MainContract.Model model, MainContract.View view){
+    public MainPresenter( MainContract.View view, int index ){
         this.view = view;
-        this.model = model;
+        this.model = new MainModel();
+        this.index = index;
     }
+
 
     @Override
     public void onScreenLoaded() {
-        if (!model.isProfileCompleted()){
-            view.showEditProfileDialog(model.getFirstName(), model.getLastName());
-        }else {
-            String firstName = model.getFirstName();
-            String lastName = model.getLastName();
-            String password = model.getPassword();
-            view.showUserInfo(firstName,lastName,password);
+        if (!model.isUserActive(index)){
+            view.navigateToLogin();
+            return;
         }
+        UserData user = model.getCurrentUser(index);
 
+        if (user.getFirstName().isEmpty() || user.getLastName().isEmpty()){
+            view.showEditProfileDialog(user.getFirstName(), user.getLastName());
+        }else {
+            view.showUserInfo(user.getFirstName(), user.getLastName(), user.getPassword());
+        }
     }
 
     @Override
     public void onSaveProfileClicked(String firstName, String lastName) {
-        if (firstName.isEmpty()){
-            view.showMessage("Ism kiriting");
-            return;
-        }
-        if (lastName.isEmpty()){
-            view.showMessage("Ism kiritin");
-            return;
-        }
-        if (firstName.equals(model.getFirstName()) && lastName.equals(model.getLastName())){
-            view.showMessage("Avval kiritilgan");
-            return;
-        }
-        model.saveProfile(firstName,lastName);
-        view.showUserInfo(firstName, lastName, model.getPassword());
-
+        model.updateUser(index, firstName,lastName);
         view.showSuccessDialog();
+        view.showUserInfo(firstName, lastName, model.getCurrentUser(index).getPassword());
+        view.showMessage("Ma'lumotlar saqlandi!");
+
     }
 
     @Override
     public void onLogoutClicked() {
-        view.showLoguotConfirmDialog();
+        view.showLogoutConfirmDialog();
     }
 
     @Override
     public void onDeleteAccountClicked() {
-        model.deletAcount();
         view.showDeleteConfirmDialog();
     }
 
-
     @Override
     public void confirmLogout() {
-        model.loguot();
+        model.logout(index);
         view.navigateToLogin();
     }
 
     @Override
     public void confirmDeleteAccount() {
-        model.deletAcount();
+        model.deleteUser(index);
         view.navigateToLogin();
     }
 }

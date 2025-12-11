@@ -1,6 +1,6 @@
 package vetro.uz.authentication.screens.profile;
 
-import vetro.uz.authentication.models.UserData;
+import vetro.uz.authentication.data.UserData;
 
 public interface MainContract {
     
@@ -8,10 +8,9 @@ public interface MainContract {
         void showEditProfileDialog(String firstName, String lastName);
         void showMessage(String message);
         void showUserInfo(String firstName, String lastName, String password);
-        void showLoguotConfirmDialog();
+        void showLogoutConfirmDialog();
         void showDeleteConfirmDialog();
         void showSuccessDialog();
-
         void navigateToLogin();
     }
     
@@ -25,12 +24,11 @@ public interface MainContract {
 
     }
     interface Model{
-        String getFirstName();
-        String getLastName();
-        String getPassword();
-        boolean isProfileCompleted();
-        void saveProfile(String firstName, String lastName);
-        void loguot();
-        void deletAcount();
+        boolean isUserActive(int index);
+        UserData getCurrentUser(int index);
+        void updateUser(int index, String firstName, String lastName);
+        void logout(int index);
+        void deleteUser(int index);
+        int getCurrentUserIndex();
     }
 }

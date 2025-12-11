@@ -2,18 +2,18 @@ package vetro.uz.authentication.screens.register;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import vetro.uz.authentication.R;
-import vetro.uz.authentication.data.PrefsManager;
-import vetro.uz.authentication.screens.login.LoginActivity;
 import vetro.uz.authentication.screens.profile.MainActivity;
 
 public class RegisterActivity extends AppCompatActivity implements RegisterContract.View{
@@ -29,20 +29,64 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        PrefsManager prefs = new PrefsManager(this);
-        presenter = new RegisterPresenter(this, new RegisterModel(prefs));
+        presenter = new RegisterPresenter(this);
         findView();
         btnBack.setOnClickListener(view -> {
             navigateToLogin();
         });
         btnSubmit.setOnClickListener(view -> {
-            String login = etLogin.getText().toString().trim();
-            String password = etPassword.getText().toString().trim();
-            String cPassord = etConPassword.getText().toString().trim();
-            presenter.onSubmitClicked(login,password,cPassord);
+            presenter.clickSubmit();
         });
         txtLogin.setOnClickListener(view -> {
             navigateToLogin();
+        });
+        etLogin.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.setLogin(editable.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+        });
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.setPassword(editable.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+        });
+        etConPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.setRepeatPassword(editable.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
         });
     }
 
@@ -66,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
     }
 
     @Override
-    public void showConfrimPasswordError(String message) {
+    public void showConfirmPasswordError(String message) {
         etConPassword.setError(message);
     }
 
@@ -76,14 +120,38 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
     }
 
     @Override
-    public void navigateToMain() {
-        this.startActivity(new Intent(this, MainActivity.class));
+    public void alreadyExistLogin() {
+        new AlertDialog.Builder(this)
+                .setTitle("Warning")
+                .setMessage("Bu login band")
+                .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    @Override
+    public void showInvalidCharacterError() {
+        new AlertDialog.Builder(this)
+                .setTitle("Xatolik")
+                .setMessage("Login va parolda # yoki & belgilarini ishlatish mumkin emas")
+                .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    @Override
+    public void navigateToMain(int index) {
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra("INDEX", index);
+        startActivity(i);
         finish();
     }
 
     @Override
     public void navigateToLogin() {
-        startActivity(new Intent(this, LoginActivity.class));
         finish();
+    }
+
+    @Override
+    public void submitButtonState(boolean bool) {
+        btnSubmit.setEnabled(bool);
     }
 }

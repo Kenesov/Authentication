@@ -1,57 +1,40 @@
 package vetro.uz.authentication.screens.profile;
 
-import vetro.uz.authentication.data.PrefsManager;
-import vetro.uz.authentication.models.UserData;
+import vetro.uz.authentication.data.UserData;
+import vetro.uz.authentication.domain.AppRepository;
+import vetro.uz.authentication.domain.AppRepositoryImpl;
 
 public class MainModel implements MainContract.Model{
-    private final PrefsManager prefs;
-
-    public MainModel(PrefsManager prefs){
-        this.prefs = prefs;
-    }
-    @Override
-    public String getFirstName() {
-        return prefs.getUser().getFirstName();
-    }
-
-    @Override
-    public String getLastName() {
-        return prefs.getUser().getLastName();
-    }
-
-    @Override
-    public String getPassword() {
-        return prefs.getUser().getPassword();
-    }
+    private  AppRepository repository = AppRepositoryImpl.getInstance();
 
 
     @Override
-    public boolean isProfileCompleted() {
-        UserData user = prefs.getUser();
-        return user.getFirstName() != null && !user.getFirstName().isEmpty()
-                && user.getLastName() != null && !user.getLastName().isEmpty();
+    public boolean isUserActive(int index) {
+        return repository.isActive(index);
     }
 
     @Override
-    public void saveProfile(String firstName, String lastName) {
-        UserData old = prefs.getUser();
-        UserData update = new UserData.UserDataBuilder()
-                .setFirstName(firstName)
-                .setLastName(lastName)
-                .setLogin(old.getLogin())
-                .setPassword(old.getPassword())
-                .build();
-
-        prefs.saveUser(update);
+    public UserData getCurrentUser(int index) {
+        return repository.getUserDataByIndex(index);
     }
 
     @Override
-    public void loguot() {
-        prefs.setLoggedIn(false);
+    public void updateUser(int index, String firstName, String lastName) {
+        repository.update(index, firstName, lastName);
     }
 
     @Override
-    public void deletAcount() {
-        prefs.deleteAccount();
+    public void logout(int index) {
+        repository.logout(index);
+    }
+
+    @Override
+    public void deleteUser(int index) {
+        repository.deleteAccount(index);
+    }
+
+    @Override
+    public int getCurrentUserIndex() {
+        return repository.getCurrentUserIndex();
     }
 }
