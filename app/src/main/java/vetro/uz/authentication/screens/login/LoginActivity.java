@@ -41,6 +41,11 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
             @Override
             public void afterTextChanged(Editable editable) {
                 presenter.setLogin(editable.toString());
+                if (editable.toString().trim().length() > 0 && editable.toString().trim().length() < 5) {
+                    etLogin.setError("Kamida 5 ta belgi kiriting");
+                } else {
+                    etLogin.setError(null);
+                }
             }
 
             @Override
@@ -57,6 +62,11 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
             @Override
             public void afterTextChanged(Editable editable) {
                 presenter.setPassword(editable.toString());
+                if (editable.toString().trim().length() > 0 && editable.toString().trim().length() < 5) {
+                    etPassword.setError("Kamida 5 ta belgi kiriting");
+                } else {
+                    etPassword.setError(null);
+                }
             }
 
             @Override

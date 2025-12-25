@@ -33,11 +33,21 @@ public class LoginPresenter implements LoginContract.Presenter {
 
     @Override
     public void login() {
-        int i = model.checkUser(login.trim(), password.trim());
-        if (i == -1) view.showMessage("Bu login parol bo'yicha user topilmadi");
-        else {
-            view.navigateToMain(i);
+        if (login.trim().length() < 5) {
+            view.showMessage("Login kamida 5 ta belgidan iborat bo'lishi kerak");
+            return;
+        }
 
+        if (password.trim().length() < 5) {
+            view.showMessage("Parol kamida 5 ta belgidan iborat bo'lishi kerak");
+            return;
+        }
+
+        int i = model.checkUser(login.trim(), password.trim());
+        if (i == -1) {
+            view.showMessage("Bu login va parol bo'yicha foydalanuvchi topilmadi");
+        } else {
+            view.navigateToMain(i);
         }
     }
 

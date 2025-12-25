@@ -46,6 +46,18 @@ public class RegisterPresenter implements RegisterContract.Presenter{
 
     @Override
     public void clickSubmit() {
+        if (login.trim().length() < 5) {
+            view.showLoginError("Login kamida 5 ta belgidan iborat bo'lishi kerak");
+            return;
+        }
+        if (password.trim().length() < 5) {
+            view.showPassword("Parol kamida 5 ta belgidan iborat bo'lishi kerak");
+            return;
+        }
+        if (!password.equals(repeatPassword)) {
+            view.showConfirmPasswordError("Parollar bir xil emas");
+            return;
+        }
         if (containsInvalidCharacters(login) || containsInvalidCharacters(password)) {
             view.showInvalidCharacterError();
             return;

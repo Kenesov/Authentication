@@ -44,6 +44,14 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
             @Override
             public void afterTextChanged(Editable editable) {
                 presenter.setLogin(editable.toString());
+                String text = editable.toString().trim();
+                if (text.length() > 0 && text.length() < 5) {
+                    etLogin.setError("Kamida 5 ta belgi kiriting");
+                } else if (text.contains("#") || text.contains("&")) {
+                    etLogin.setError("# va & belgilarini ishlatish mumkin emas");
+                } else {
+                    etLogin.setError(null);
+                }
             }
 
             @Override
@@ -60,6 +68,14 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
             @Override
             public void afterTextChanged(Editable editable) {
                 presenter.setPassword(editable.toString());
+                String text = editable.toString().trim();
+                if (text.length() > 0 && text.length() < 5) {
+                    etPassword.setError("Kamida 5 ta belgi kiriting");
+                } else if (text.contains("#") || text.contains("&")) {
+                    etPassword.setError("# va & belgilarini ishlatish mumkin emas");
+                } else {
+                    etPassword.setError(null);
+                }
             }
 
             @Override
@@ -76,6 +92,12 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
             @Override
             public void afterTextChanged(Editable editable) {
                 presenter.setRepeatPassword(editable.toString());
+                String text = editable.toString();
+                if (text.length() > 0 && !text.equals(etPassword.getText().toString())) {
+                    etConPassword.setError("Parollar bir xil emas");
+                } else {
+                    etConPassword.setError(null);
+                }
             }
 
             @Override
