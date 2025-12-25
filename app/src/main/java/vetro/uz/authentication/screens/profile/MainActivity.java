@@ -2,6 +2,7 @@ package vetro.uz.authentication.screens.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         EditText etFirstName = view.findViewById(R.id.et_first_name);
         EditText etLastName = view.findViewById(R.id.et_last_name);
         Button btnSave = view.findViewById(R.id.btn_save);
+        etFirstName.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(13) });
+        etLastName.setFilters(new InputFilter[]{ new InputFilter.LengthFilter(13) });
 
         etFirstName.setText(firstName);
         etLastName.setText(lastName);
@@ -69,6 +72,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         btnSave.setOnClickListener(view1 -> {
             String first = etFirstName.getText().toString().trim();
             String last = etLastName.getText().toString().trim();
+            if (first.isEmpty() || last.isEmpty()) {
+                etFirstName.setError("Majburiy");
+                etLastName.setError("Majburiy");
+                return;
+            }
             presenter.onSaveProfileClicked(first, last);
             dialog.dismiss();
         });
